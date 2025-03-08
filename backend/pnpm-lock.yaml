@@ -17,6 +17,9 @@ importers:
       '@syedahmedullahjaser/zod-inference-medium-blog':
         specifier: ^1.0.6
         version: 1.0.6
+      bcryptjs:
+        specifier: ^3.0.2
+        version: 3.0.2
       hono:
         specifier: ^4.4.7
         version: 4.6.12
@@ -30,6 +33,9 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20240529.0
         version: 4.20241127.0
+      '@types/bcryptjs':
+        specifier: ^2.4.6
+        version: 2.4.6
       wrangler:
         specifier: ^3.57.2
         version: 3.91.0(@cloudflare/workers-types@4.20241127.0)
@@ -270,6 +276,9 @@ packages:
   '@syedahmedullahjaser/zod-inference-medium-blog@1.0.6':
     resolution: {integrity: sha512-ODeF5Z7DoNr61NnbxakCkLUEZUXF/qfveCd28EdfSg+5rNitkh1rok8ymTJFVvZnXzyeWSjU0UgLChMVQfABKg==}
 
+  '@types/bcryptjs@2.4.6':
+    resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
+
   '@types/node-forge@1.3.11':
     resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
 
@@ -287,6 +296,10 @@ packages:
 
   as-table@1.0.55:
     resolution: {integrity: sha512-xvsWESUJn0JN421Xb9MQw6AsMHRCUknCe0Wjlxvjud80mU4E6hQf1A6NzQKcYNmYw62MfzEtXc+badstZP3JpQ==}
+
+  bcryptjs@3.0.2:
+    resolution: {integrity: sha512-k38b3XOZKv60C4E2hVsXTolJWfkGRMbILBIe2IBITXciy5bOsTKot5kDrf3ZfufQtQOUN5mXceUEpU1rTl9Uog==}
+    hasBin: true
 
   blake3-wasm@2.1.5:
     resolution: {integrity: sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g==}
@@ -663,6 +676,8 @@ snapshots:
     dependencies:
       zod: 3.23.8
 
+  '@types/bcryptjs@2.4.6': {}
+
   '@types/node-forge@1.3.11':
     dependencies:
       '@types/node': 22.10.1
@@ -680,6 +695,8 @@ snapshots:
   as-table@1.0.55:
     dependencies:
       printable-characters: 1.0.42
+
+  bcryptjs@3.0.2: {}
 
   blake3-wasm@2.1.5: {}
 

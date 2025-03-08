@@ -1,82 +1,124 @@
+import { PrismaClient } from "@prisma/client/edge";
+import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
-import { PrismaClient } from '@prisma/client/edge'
-import { withAccelerate } from '@prisma/extension-accelerate'
-import { sign } from 'hono/jwt'
-import { signinInput, signupInput } from "@syedahmedullahjaser/zod-inference-medium-blog";
+import { sign } from "hono/jwt";
+import { SigninSchema,  SignupSchema } from "@ahmed_bargir/medium_types_new";
 
+import bcrypt from 'bcryptjs'
+ 
 export const userRouter = new Hono<{
-	Bindings: {
-		DATABASE_URL: string,
-		JWT_SECRET: string,
-	}
+    Bindings: {
+        DATABASE_URL: string;
+        JWT_SECRET: string;
+    }
 }>();
 
+ 
 userRouter.post('/signup', async (c) => {
-	const body = await c.req.json();
-	console.log(body)
-	const { success } = signupInput.safeParse(body);
-	console.log(success)
-	if(!success){
-		c.status(411);
-		return c.json({
-			msg: "Inputs are incorrect"
-		})
-	}
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env?.DATABASE_URL,
-	}).$extends(withAccelerate());
+   try {
+    console.log('database url  is ', c.env.DATABASE_URL);
+    console.log('jwt token is ', c.env.JWT_SECRET);
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+      }).$extends(withAccelerate());
+    
+      const body = await c.req.json();
+    console.log('data is ', body);
+    
+      const verifySchema = SignupSchema.safeParse(body)
+      if(!verifySchema.success){
+          return c.json({
+              msg:"please provide the valid schema!",
+              error:verifySchema.error.flatten(),
+              success:false
+          })
+      }
+      const {name, email, password} = verifySchema.data;
 
-	try {
-		const user = await prisma.user.create({
-			data: {
-				email: body.email,
-				password: body.password,
-				name: body.name,
-			}
-		});
+      const userExist = await prisma.user.findUnique({
+        where:{email}
+      })
+      if(userExist){
+        c.status(403)
+        return c.json({
+            msg:"user already exists login instead!"
+        })
+      }
 
-    const jwt = await sign({id: user.id}, c.env.JWT_SECRET)
-    return c.text(jwt);
-	
-  } catch(e) {
-		c.status(411);
-		return c.text("Invalid")
-	}
+      const salt = await bcrypt.genSalt(10)
+      const hashPassword = await bcrypt.hash(password, salt)
+      const user = await prisma.user.create({
+        data: {
+          name, 
+          email, 
+          password:hashPassword
+        },
+      });
+    
+      
+      
+      
+      const token = await sign({ id: user.id }, c.env.JWT_SECRET)
+     
+      c.status(200)
+      return c.json({
+        msg:"user created success",
+        success:true,
+        user,
+        jwt: token
+      })
+   } catch (error:any) {
+    console.log('error found', error.message);
+    
+   }
 })
-
+  
 userRouter.post('/signin', async (c) => {
-	
-	const body = await c.req.json();
-	const { success } = signinInput.safeParse(body);
-	if(!success){
-		c.status(411);
-		return c.json({
-			msg: "Inputs are incorrect"
-		})
-	}
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env?.DATABASE_URL,
-	}).$extends(withAccelerate());
+   try {
+    const prisma = new PrismaClient({
+        //@ts-ignore
+            datasourceUrl: c.env?.DATABASE_URL	,
+        }).$extends(withAccelerate());
+    
+         
+        const body = await c.req.json();
+        const verifySchema = SigninSchema.safeParse(body)
+    
+        if(!verifySchema.success){
+            return c.json({
+                msg:"please provide the valid schema!",
+                error:verifySchema.error.flatten(),
+                success:false
+            })
+        }
+    
+        const {email, password} = verifySchema.data
+        const user = await prisma.user.findUnique({
+            where: {
+                email,
+         
+            }
+        });
+    
+        if (!user) {
+            c.status(403);
+            return c.json({ error: "user not found" });
+        }
+         
+        const verifyPassword = await bcrypt.compare(password, user.password)
+        if(!verifyPassword){
+            c.status(403);
+            return c.json({ error: "please provide the correct password" });
+        }
+    
+        const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
+        return c.json({ 
+          msg:'user login success!',
+          success:true,
+          jwt
 
-	try {
-		const user = await prisma.user.findFirst({
-			where: {
-				email: body.email,
-				password: body.password
-			}
-		});
-	
-		if (!user) {
-			c.status(403); //unauthorised
-			return c.json({ msg: "Incorrect credentials" });
-		}
-	
-		const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
-		return c.json({ jwt });
-	
-	} catch(e){
-		c.status(411);
-		return c.text("Invalid")
-	}
-
-	})
+        });
+   }  catch (error:any) {
+    console.log('error', error.message);
+   }
+})

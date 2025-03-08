@@ -1,13 +1,25 @@
+import { useRecoilStateLoadable } from "recoil";
 import { Appbar } from "../components/Appbar"
 import { BlogCard } from "../components/BlogCard"
 import { BlogSkeleton } from "../components/BlogSkeleton";
-import { useBlogs } from "../hooks"
+ 
+import { blogsState } from "../stores/atoms/atom";
+interface BlogCardProps{
+    
+  id: number;
+  title: string;
+  desc: string;
+  publish: boolean;
+  authorId: string;
+  createdAt: string;
+  updatedAt: string;
 
+}
 export const Blogs = () => {
 
-  const {loading, blogs} = useBlogs();
+  const [blogs] = useRecoilStateLoadable(blogsState)
 
-    if (loading){
+    if (blogs.state ==='loading'){
       return <div>
         <Appbar/>
         <div className="flex justify-center">
@@ -32,12 +44,15 @@ export const Blogs = () => {
        <Appbar />
       <div  className="flex justify-center">
         <div className="">
-        {blogs.map(blog => <BlogCard 
-         id={blog.id}
-         authorname ={blog.author.name || "Jaser"}
-         title={blog.title}
-         content={blog.content}
-         publishedDate={"23rd June"} />) }
+        {blogs.contents.map((data:BlogCardProps)=>{
+                return <BlogCard 
+                title={data.title}
+                authorname={data.authorId}
+                desc={data.desc}
+                id={data.id}
+                publishedDate={data.publish}
+                />
+            })}
         
        
       </div>
