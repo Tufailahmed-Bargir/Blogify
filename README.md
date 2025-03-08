@@ -1,9 +1,15 @@
 # Blogging App Like Medium
 
 This is a blogging application inspired by Medium, developed as part of Cohort 2.0 by Harkirat. The project is built from scratch using a modern tech stack and deployed on Vercel and Cloudflare Workers.
+<img width="952" alt="2 (1)" src="https://github.com/user-attachments/assets/8062edab-364f-4262-8a71-54a420e21e7b" />
+<img width="947" alt="1" src="https://github.com/user-attachments/assets/37b6eace-2248-43c6-9fe8-e522f9a6d753" />
+<img width="935" alt="3 (1)" src="https://github.com/user-attachments/assets/5bf80385-f5eb-4272-bbf8-efc7d4692b36" />
 
-## Live Demo
-Check out the live app [here](https://blogging-app-like-medium.vercel.app/).
+
+
+<img width="945" alt="4 (1)" src="https://github.com/user-attachments/assets/6dc3d060-515d-4fd2-a1ac-6ad06f4c11db" />
+
+
 ## Features
 
 -   User Authentication (JWT)
